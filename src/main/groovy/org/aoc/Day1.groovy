@@ -1,17 +1,22 @@
 package org.aoc
 
 class Day1 extends DayBase {
-    void collector(Closure c){
-        getInput().eachLine {
-            (it=~/^(?<dir>[LR])(?<amount>\d{1,3})$/).collect{_,dir,amount->
-                [dir as Character, amount as Integer]
-            }.each c
+    void collector(Closure c) {
+        (getInput().text=~/(?m)^(?<dir>[LR])(?<amount>\d{1,3})$/).collect{_,dir,amount->
+            [dir as String, amount as Integer]
+        }.each c
+    }
+    abstract class Part {
+        def state = 50
+        int zerocounter = 0
+        abstract void operate(String dir, Integer amount)
+        void run(){
+            collector this::operate
+            println zerocounter
         }
     }
-    void part1() {
-        def state = 50
-        def zerocounter = 0
-        collector{ dir, amount->
+    class Part1 extends Part{
+        void operate(String dir, Integer amount) {
             switch (dir){
                 case 'L'-> state -= amount
                 case 'R' -> state += amount
@@ -20,42 +25,32 @@ class Day1 extends DayBase {
                 zerocounter++
             }
         }
-        println(zerocounter)
     }
-    void part2() {
-        def state = 50
-        def zerocounter = 0
-        collector { dir, amount ->
-            zerocounter += amount.intdiv(100)
-            amount %= 100
-            switch (dir) {
-                case 'L' -> {
-                    if ((state - amount) % 100 > state) {
-                        zerocounter++
-                    }
-                    state -= amount
-                }
-                case 'R' -> {
-                    if ((state + amount) % 100 > state) {
-                        zerocounter++
-                    }
-                    state += amount
+    class Part2 extends Part{
+        void operateAlt(String dir, Integer amount) {
+            int hundreds = amount.intdiv(100)
+            int rem = amount % 100
+            zerocounter += hundreds
+            if (rem != 0) {
+                if (dir == 'L') {
+                    int distance = state % 100
+                    if (distance == 0) distance = 100
+                    if (rem >= distance) zerocounter++
+                    state = Math.floorMod(state - rem, 100)
+                } else {
+                    int distance = (100 - state) % 100
+                    if (distance == 0) distance = 100
+                    if (rem >= distance) zerocounter++
+                    state = Math.floorMod(state + rem, 100)
                 }
             }
         }
-        println(zerocounter)
-    }
-    abstract class Part{
-        int state = 50
-        int zerocounter = 0
-        abstract void operate(Character dir, Integer amount)
-        void run(){
-            collector(operate as Closure)
-        }
-    }
-    class Part1 extends Part{
-        void operate(Character dir, Integer amount) {
-
+        void operate(String dir, Integer amount) {
+            int step = dir == 'L' ? -1 : 1
+            amount.times {
+                state = Math.floorMod(state + step, 100)
+                if (state == 0) zerocounter++
+            }
         }
     }
 }
