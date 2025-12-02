@@ -28,10 +28,23 @@ class Day1 extends DayBase {
     }
     class Part2 extends Part{
         void operate(String dir, Integer amount) {
-            int step = dir == 'L' ? -1 : 1
-            amount.times {
-                state = Math.floorMod(state + step, 100)
-                if (state == 0) zerocounter++
+            int hundreds = amount.intdiv(100)
+            int rem = amount % 100
+            zerocounter += hundreds
+            if (rem != 0) {
+                switch(dir) {
+                case 'L':
+                    int distance = state % 100
+                    if (distance == 0) distance = 100
+                    if (rem >= distance) zerocounter++
+                    state = Math.floorMod(state - rem, 100)
+                    break
+                case 'R':
+                    int distance = (100 - state) % 100
+                    if (distance == 0) distance = 100
+                    if (rem >= distance) zerocounter++
+                    state = Math.floorMod(state + rem, 100)
+                }
             }
         }
     }
