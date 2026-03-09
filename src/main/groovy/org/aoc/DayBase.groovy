@@ -13,7 +13,7 @@ abstract class DayBase {
         if(part){
             part.run()
         } else {
-            throw new UnsupportedOperationException("Part 1 not implemented")
+            System.err.println "Part 1 not implemented"
         }
     }
     void part2(){
@@ -23,7 +23,7 @@ abstract class DayBase {
         if(part){
             part.run()
         } else {
-            throw new UnsupportedOperationException("Part 2 not implemented")
+            System.err.println "Part 2 not implemented"
         }
     }
 }

@@ -11,7 +11,9 @@ repositories {
 }
 
 dependencies {
-    implementation("org.apache.groovy:groovy:5.0.0")
+    // https://mvnrepository.com/artifact/org.apache.groovy/groovy-all
+    implementation("org.apache.groovy:groovy-all:5.0.0")
+    implementation("org.apache.commons:commons-math3:3.6.1")
 
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
